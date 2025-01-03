@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Task Attendance Calendar</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #cfe2f3, #ffffff);
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #16a085;
+            margin: 20px 0;
+        }
+
+        .calendar-container {
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .month {
+            margin-bottom: 40px;
+        }
+
+        .month-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .day-header {
+            font-weight: bold;
+            background-color: #34495e;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .day {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .day:hover {
+            background-color: #e0f7fa;
+        }
+
+        .day.marked {
+            background-color: #16a085;
+            color: #fff;
+            pointer-events: none;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>2025 Task Tracker</h1>
+    <div class="calendar-container" id="calendar-container"></div>
+    <footer>&copy; 2025. Stay consistent with DSA and exercise. Keep growing!</footer>
+
+    <script>
+        function generateCalendar(year) {
+            const container = document.getElementById('calendar-container');
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const months = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            months.forEach((month, monthIndex) => {
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'month';
+
+                const monthName = document.createElement('div');
+                monthName.className = 'month-name';
+                monthName.textContent = month;
+
+                const calendar = document.createElement('div');
+                calendar.className = 'calendar';
+
+                // Add day headers
+                daysOfWeek.forEach(day => {
+                    const header = document.createElement('div');
+                    header.className = 'day-header';
+                    header.textContent = day;
+                    calendar.appendChild(header);
+                });
+
+                const firstDay = new Date(year, monthIndex, 1);
+                const lastDay = new Date(year, monthIndex + 1, 0);
+                let currentDate = firstDay;
+
+                // Fill empty days at the start of the month
+                for (let i = 0; i < firstDay.getDay(); i++) {
+                    const emptyDay = document.createElement('div');
+                    calendar.appendChild(emptyDay);
+                }
+
+                // Fill the calendar with days
+                while (currentDate <= lastDay) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'day';
+                    dayDiv.textContent = currentDate.getDate();
+
+                    dayDiv.addEventListener('click', () => {
+                        if (!dayDiv.classList.contains('marked')) {
+                            dayDiv.classList.add('marked');
+                            // Save marked day info to local storage
+                            localStorage.setItem(`${year}-${monthIndex + 1}-${currentDate.getDate()}`, 'marked');
+                        }
+                    });
+
+                    // Check local storage for marked days
+                    if (localStorage.getItem(`${year}-${monthIndex + 1}-${currentDate.getDate()}`) === 'marked') {
+                        dayDiv.classList.add('marked');
+                    }
+
+                    calendar.appendChild(dayDiv);
+
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                monthDiv.appendChild(monthName);
+                monthDiv.appendChild(calendar);
+                container.appendChild(monthDiv);
+            });
+        }
+
+        // Initialize the calendar for 2025
+        generateCalendar(2025);
+    </script>
+</body>
+</html>
